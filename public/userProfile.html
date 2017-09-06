@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js"></script>
+    <link rel="stylesheet" href="stylesheets/style.css">
+</head>
+<style>
+    #divElement{
+        position: absolute;
+        left: 25%;
+        width: 50%;
+    }​
+</style>
+<body>
+
+<script id="timeTemplate" type="text/x-jQuery-tmpl">
+    <li>${time}</li>
+</script>
+<div style="height: 50px; margin-top: 0px;padding-top: 0px;top: 0px; background-color: darkblue">
+    <h1 style="color: white;text-align:center">Web Page Behaviour logging application
+        <a style="color: #00BFFF;float: right;padding-right: 10px" href="/">Logout</a> </h1>
+</div>
+<div id="divElement" style="padding-left: 100px; background-color: white">
+    <h1 id="welcomeuser">Welcome user_name</h1>
+
+    <h2><a id="stackoverflow" href="https://stackoverflow.com/questions/tagged/java?sort=frequent&pageSize=15">Stack Overflow</a></h2>
+
+    <h2 id="loginHistoryTitle">Login History of user_name</h2>
+    <ul id="loginHistoryList">
+    </ul>
+</div>
+
+</body>
+<script>
+    document.cookie = "userName=user_name";
+    //var value = $.cookie("obligations");
+    console.log(document.cookie);
+    $( document ).ready(function() {
+        console.log(localStorage.getItem("userName"));
+        var historyList = [];
+        $.ajax({
+            url: "/login/historyData",
+            type:"POST",
+            data:{'userName':'user_name'},
+            success: function(historyData){
+                console.log("HistoryData: " + historyData)
+                for(var item in historyData){
+                    historyList.push({'time':String(historyData[item])});
+                }
+                console.log("historyList: " + historyList + "type: " + typeof(historyList));
+                $("#timeTemplate").tmpl(historyList).appendTo("#loginHistoryList");
+            }
+        });
+    });
+</script>
+</html>

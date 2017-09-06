@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="UTF-8">
+    <title>User Behaviour Login</title>
+
+    <link rel="stylesheet" href="stylesheets/style.css">
+
+</head>
+
+<body>
+<div style="height: 50px; margin-top: 0px;padding-top: 0px;top: 0px; background-color: darkblue">
+    <h1 style="color: white;text-align:center">Web Page Behaviour logging application</h1>
+</div>
+<div id="loginDiv" class="form: form-module" style="position: relative; text-align: center">
+    <h2>Login to your account</h2>
+    <form style="justify-content: center" action="/login" method="post">
+        <input id = "userName" type="text" placeholder="Username" name="user" required/>
+        <input type="password" placeholder="Password" name="password" required/><br>
+        <!--accountDoesNotExistPlaceholder-->
+        <button style="background-color: #00BFFF">Login</button>
+    </form>
+    <button onclick="createAccount()" style="background-color: #00BFFF">Create Account</button>
+</div>
+
+<div id="createAccountDiv" class="form: form-module" style="position: relative; text-align: center; display:none">
+    <h2>Create your account</h2>
+    <form style="justify-content: center" action="/login/createAccount" method="post">
+        <input type="text" placeholder="Enter Username" name="newUser" required/>
+        <input type="password" placeholder="Enter Password" name="newPassword" required/><br>
+        <button style="background-color: #00BFFF">Create Account</button>
+    </form>
+    <button onclick="createAccount()" style="background-color: #00BFFF">Login to Account</button>
+</div>
+</body>
+<script>
+    function createAccount(createAccountDiv) {
+        var loginDiv = document.getElementById("loginDiv");
+        loginDiv.style.display = (loginDiv.style.display == 'none') ? 'block' : 'none';
+        var createDivEle = document.getElementById("createAccountDiv");
+        createDivEle.style.display = (createDivEle.style.display == 'block') ? 'none' : 'block';
+    }
+</script>
+</html>
