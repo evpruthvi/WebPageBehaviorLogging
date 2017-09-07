@@ -13,6 +13,10 @@
         left: 25%;
         width: 50%;
     }​
+     #loginDiv{
+         float: left;
+         width: 49%;
+     }
 </style>
 <body>
 
@@ -23,21 +27,30 @@
     <h1 style="color: white;text-align:center">Web Page Behaviour logging application
         <a style="color: #00BFFF;float: right;padding-right: 10px" href="/">Logout</a> </h1>
 </div>
-<div id="divElement" style="padding-left: 100px; background-color: white">
-    <h1 id="welcomeuser">Welcome user_name</h1>
+<div id="divElement" style="background-color: white">
+    <h1 style="text-align:center" id="welcomeuser">Welcome user_name</h1>
 
-    <h2><a id="stackoverflow" href="https://stackoverflow.com/questions/tagged/java?sort=frequent&pageSize=15">Stack Overflow</a></h2>
+    <h2 style="text-align:center"><a target="_blank" id="stackoverflow" href="https://stackoverflow.com/questions/tagged/java?sort=frequent&pageSize=15">Stack Overflow</a></h2>
+    <div style="text-align:center" >
+        <h2 id="loginHistoryTitle">Login History of user_name</h2>
+        <textarea id = "loginTextArea" rows="10" cols="70">
+        </textarea>
 
-    <h2 id="loginHistoryTitle">Login History of user_name</h2>
-    <ul id="loginHistoryList">
-    </ul>
+        <h2 id="InteractionsTitle">Interactions of user_name</h2>
+        <textarea id = "actionsTextArea" rows="10" cols="70">
+
+        </textarea>
+        <br>
+        <button onclick="getInteractionsFromDB()" style="text-align:center">Show Interactions</button>
+    </div>
+
 </div>
 
 </body>
 <script>
     document.cookie = "userName=user_name";
     //var value = $.cookie("obligations");
-    console.log(document.cookie);
+    console.log("cookie:"+document.cookie);
     $( document ).ready(function() {
         console.log(localStorage.getItem("userName"));
         var historyList = [];
@@ -46,14 +59,22 @@
             type:"POST",
             data:{'userName':'user_name'},
             success: function(historyData){
-                console.log("HistoryData: " + historyData)
-                for(var item in historyData){
-                    historyList.push({'time':String(historyData[item])});
-                }
-                console.log("historyList: " + historyList + "type: " + typeof(historyList));
-                $("#timeTemplate").tmpl(historyList).appendTo("#loginHistoryList");
+                //console.log("HistoryData: " + historyData);
+                var strs = String(historyData);
+                strs = strs.replace(/\|/g,'\n');
+                document.getElementById("loginTextArea").value = strs;
             }
         });
     });
+
+    function getInteractionsFromDB() {
+        $.ajax({
+            url: "/login/getInteractionsFromDB",
+            type:"POST",
+            success: function(actionsData){
+                document.getElementById("actionsTextArea").value = actionsData;
+            }
+        });
+    }
 </script>
 </html>

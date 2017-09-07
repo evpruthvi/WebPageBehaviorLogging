@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../db');
-var moment = require('moment');
 var fs = require('fs');
 var path = require('path');
 
@@ -15,13 +14,13 @@ router.post('/historyData', function (req,res,next) {
         if (err)
             throw err;
         else {
-            var list = [];
+            //var list = [];
             var date = new Date();
             var dateStr = date.toString();
             if(result[0].login_time == ''){
                 db.query('UPDATE user_info SET login_time = \''+ dateStr +'\' WHERE user_name = \''+ req.cookies.userName +'\';', function (err, result) {
-                    list.push(dateStr);
-                    res.send(list);
+                    //list.push(dateStr);
+                    res.send(dateStr);
                 });
             }
             else{
@@ -30,8 +29,8 @@ router.post('/historyData', function (req,res,next) {
                     if (err)
                         throw err;
                     else{
-                        list = login_times.split('|');
-                        res.send(list);
+                        //list = login_times.split('|');
+                        res.send(login_times);
                     }
                 });
             }
@@ -59,6 +58,20 @@ router.post('/historyData', function (req,res,next) {
     // });
 });
 
+router.post('/getInteractionsFromDB', function (req,res,next) {
+    db.query('select * from user_' + req.cookies.userName+'', function (err,result) {
+        if (err)
+            throw err;
+        else {
+            var actionStr = "";
+            for(var item in result){
+                actionStr = actionStr + result[item].action + " on " + result[item].action_time + " for question "+ result[item].additional_info + "\n \n";
+            }
+            res.send(actionStr);
+        }
+    });
+});
+
 router.post('/', function(req, res, next) {
     var post = req.body;
 
@@ -66,6 +79,7 @@ router.post('/', function(req, res, next) {
         if (err)
             throw err;
         else{
+            db.query('create table if not exists user_'+ post.user +' (action VARCHAR(30), action_time VARCHAR(100), additional_info VARCHAR(150));');
             db.query('select * from user_info where user_name=\'' + post.user + '\' and password=AES_ENCRYPT(\'' + post.password + '\',\'secretkey\')', function(err, result) {
                 if (err)
                     throw err;
