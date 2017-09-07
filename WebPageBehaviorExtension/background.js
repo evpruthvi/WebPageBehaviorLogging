@@ -1,5 +1,5 @@
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    chrome.cookies.get({url: "http://localhost", name: "userName"}, function(cookie) {
+    chrome.cookies.get({url: "https://webpagebehaviorlogging.herokuapp.com", name: "userName"}, function(cookie) {
         var userName = cookie.value
         console.log("User Name: " + userName);
 
@@ -17,7 +17,7 @@ function makeAjaxCall(userName, receviedAction, receivedAdditionalInfo){
         var date = new Date();
         var dateStr = date.toString();
         $.ajax({
-            url: "http://localhost:3000/updateAction",
+            url: "https://webpagebehaviorlogging.herokuapp.com/updateAction",
             type: "POST",
             data: {
                 user_name: userName,
