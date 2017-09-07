@@ -25,7 +25,7 @@
 </script>
 <div style="height: 50px; margin-top: 0px;padding-top: 0px;top: 0px; background-color: darkblue">
     <h1 style="color: white;text-align:center">Web Page Behaviour logging application
-        <a onclick="logout()" style="cursor: pointer; color: #00BFFF;float: right;padding-right: 10px">Logout</a> </h1>
+        <a style="color: #00BFFF;float: right;padding-right: 10px" href="/">Logout</a> </h1>
 </div>
 <div id="divElement" style="background-color: white">
     <h1 style="text-align:center" id="welcomeuser">Welcome user_name</h1>
@@ -85,16 +85,6 @@
             type:"POST",
             success: function(actionsData){
                 document.getElementById("actionsTextArea").value = actionsData;
-            }
-        });
-    }
-    
-    function logout() {
-        $.ajax({
-            url: "/logout/",
-            type:"POST",
-            success: function(historyData){
-                console.log("Logged Out");
             }
         });
     }
