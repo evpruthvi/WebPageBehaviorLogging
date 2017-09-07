@@ -62,6 +62,8 @@ router.post('/', function(req, res, next) {
                 if(result.length > 0){
                     var userProfileFile = path.join(__dirname, '..', 'public', 'userProfile.html');
                     var data = fs.readFileSync(userProfileFile, 'utf8');
+                    res.cookie('userName',post.user,{httpOnly: false });
+                    // res.redirect(userProfileFile);
                     res.send(data.replace(/user_name/g,post.user));
                 }
                 else{
