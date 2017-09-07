@@ -1,7 +1,7 @@
 {
-  "name": "Page action by URL",
+  "name": "Behavior logging in StackOverflow",
   "version": "1.0",
-  "description": "Shows a page action for urls which have the letter 'g' in them.",
+  "description": "User behaviour logging",
   "background": {
     "scripts": ["background.js","jquery-3.2.1.min.js"],
     "persistent": false
@@ -9,7 +9,7 @@
   "page_action" :
   {
     "default_icon" : "icon-19.png",
-    "default_title" : "There's a 'G' in this URL!"
+    "default_title" : "User Behavior logging in StackOverflow"
   },
   "permissions" : [
 	"cookies",
