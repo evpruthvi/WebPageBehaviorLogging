@@ -4,11 +4,6 @@ var db = require('../db');
 var fs = require('fs');
 var path = require('path');
 
-// router.post('/historyTemplate.htm', function(req, res, next) {
-//     var historyTemplate = path.join(__dirname, '..', 'public','templates','historyItem.htm');
-//     var data = fs.readFileSync(historyTemplate);
-//     res.send(data);
-// });
 router.post('/historyData', function (req,res,next) {
     db.query('SELECT * FROM user_info WHERE user_name = \'' + req.cookies.userName + '\'', function (err, result) {
         if (err)
@@ -36,26 +31,6 @@ router.post('/historyData', function (req,res,next) {
             }
         }
     });
-    // db.query('CREATE TABLE IF NOT EXISTS user_'+ req.cookies.userName +'(login_time INT(11))', function(err, result) {
-    //     if (err)
-    //         throw err;
-    //     else {
-    //         currentTime = moment().unix();
-    //         db.query('INSERT INTO `user_' + req.cookies.userName + '`(`login_time`) VALUES (' + currentTime + ')', function (err, result) {
-    //             if (err)
-    //                 throw err;
-    //             else
-    //                 db.query('select * from user_' + req.cookies.userName, function (err, result) {
-    //                     var list = [];
-    //                     for(var item in result){
-    //                         var time = moment.unix(result[item].login_time).format("dddd, MMMM Do YYYY, h:mm:ss a");
-    //                         list.push(time);
-    //                     }
-    //                     res.send(list);
-    //                 });
-    //         });
-    //     }
-    // });
 });
 
 router.post('/getInteractionsFromDB', function (req,res,next) {
@@ -110,9 +85,6 @@ router.post('/createAccount', function(req, res, next) {
                     throw err;
                 else{
                     res.redirect('/');
-                    // var userProfileFile = path.join(__dirname, '..', 'public', 'index.html');
-                    // var data = fs.readFileSync(userProfileFile, 'utf8');
-                    // res.send(data.replace(/<!--accountDoesNotExistPlaceholder-->/g,'<p style="color: red">Account created! Please login.</p>'));
                 }
             });
         }
