@@ -6,6 +6,9 @@
     <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.js"></script>
     <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js"></script>
     <link rel="stylesheet" href="stylesheets/style.css">
+    <link href="c3-0.4.18/c3.css" rel="stylesheet">
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="c3-0.4.18/c3.min.js"></script>
 </head>
 <style>
     #divElement{
@@ -31,7 +34,7 @@
     <h1 style="text-align:center" id="welcomeuser">Welcome user_name</h1>
 
     <h2 style="text-align:center"><a target="_blank" id="stackoverflow" href="https://stackoverflow.com/questions/tagged/java?sort=frequent&pageSize=15">Stack Overflow</a></h2>
-    <div style="text-align:center" >
+    <div style="text-align:center; padding: 10px">
         <h2 id="loginHistoryTitle">Login History</h2>
         <textarea id = "loginTextArea" rows="10" cols="70">
         </textarea>
@@ -42,20 +45,72 @@
         </textarea>
         <br>
         <button onclick="getInteractionsFromDB()" style="text-align:center">Show/Refresh Interactions</button>
+        <div style="text-align:left" >
+            <h1 style="padding-left: 10px">Behavior Logging and Insights</h1>
+            <ul>
+                <li>UpVote and DownVote: These options are tracked and logged so that we get to know more about the user. Information such as his likes, dislikes about content of the answer, or if the user is not upvoting or downvoting the answers or questions it also means that user has read the it fully</li>
+                <li>SubmitButton: This activity log tells us if user has more knowledge on the topics and is willing to share his/her thoughts and knowledge</li>
+                <li>Questions: Questions that user is checking is logged. This will give us insights of user's topics of interests</li>
+                <li>Favorites: User's activity of saving the question to his/her favorite lists will also gives insights of his/her interests</li>
+                <li>Scroll: User's scroll in the webpage is tracked and logged. With this information we may know whether user is reading all the answers/questions and spending enought time reading the content in the screen. This will also contribute to his/her's interested topics</li>
+                <li>Tags and Related Topics: Selections of tags in the webpages and clicking related topics links on the sides,  are tracked and logged. This will give us direct information of user's interested topics. This will enable us to recommend questions of his/her interest infuture</li>
+                <li>Asking Questions and Answer in comments: By logging these two actions in the webpage, will give us insights of user's interest as well his/her's strong knowledge in particular topics</li>
+                <li>Time: For all the above Interactions, time of the interaction is logged too. This will help in recommendations in future. Example, if user is at work during day time and is interested in only looking for answer's and during night time he/she has enough free time and answer's questions to topics user is strong at will help us recommending them at appropriate time</li>
+            </ul>
+        </div>
+        <br>
+        <br>
+        <h2 id="pieChart">Interactions Contribution by Users</h2>
+        <div id="userWeightChart"></div>
+        <br>
+        <br>
+        <h2 id="typeOfInteractions">Type Of Interactions</h2>
+        <div>
+            <button id="averageUserChartButton" onclick="getInteractionsAverageUser('/vizData/interactionsAverageUser')" style="text-align:center">Show Average Interactions of All Users</button>
+            <button id="currentUserChartButton" disabled onclick="getInteractionsAverageUser('/vizData/interactionCurrentUser')" style="text-align:center">Show Interactions of Current User</button>
+        </div>
+        <div id="interactionsPerUserChart"></div>
+        <br>
+        <br>
+        <h2 id="usageHistory">Last 30 days Usage history</h2>
+        <div id="interactions30UserChart"></div>
     </div>
+    <div style="text-align:left" >
+        <h1 style="padding-left: 10px">Analysis and Findings</h1>
+        <h2 style="padding-left: 10px">Pie Chart:</h2>
+        <p> The user's contribution to the interactions logged into the system can be viewed here.<br>
+            Analysis: Users who contribute more to the logged interactions can be viewed here.<br>
+            Findings: Depending on the contributions made by users, we can see who is influencing and which interactions
+            are being influenced by that user more. Depending on that we can decrease its weight or the user's weight in
+            selecting any metrics for comparision which could affect other users in building their user profile.
+        </p>
+        <h2 style="padding-left: 10px">Bar Graph of Interaction types:</h2>
+        <p> In this visualization, the type of interactions logged into the database is listed along with the number of
+            times those interactions are logged for particular user as well as average interations logged for all users.<br>
+            Analysis: In many cases we have to give more or less weights to certain interactions compared to others while building a user profile.
+            Because, the interactions like scrolling in a page will be more, compared to other interactions, if all interactions are given
+            same weights, then scrolling would mask other interaction contribution. This can be visualized best in the give bar graph.
+            There are 2 buttons provided which will show interactions for current user and average interactions for all the users in the system.<br>
+            Findings: The higher the bar for any interaction compared to others will help us build user's profile better. Not all users are same,
+            this graph will give us insights on what user is more interested in doing or looking for in a web page.
+        </p>
+        <h2 style="padding-left: 10px">Timeseries Chart:</h2>
+        <p> This visualization shows the user's acivity over time, in this case past month(30 days).<br>
+            Analysis: The time at which user is more active will help us build user profile to give good recommendatations in future.
+            The content will is relevant now for a user may not be relevant in future for the same user. It is very important to consider this while building a good model.
+            Findings: Interactions logged for a user is visualized in the graph. Some users might be very active on certain time of the day or certain days of a week or even month.
+            This visualization helps in improving resources to give better recommendations to them.
+        </p>
+        <h2 style="padding-left: 10px">Interactions:</h2>
+        <p> <strong>Hover on Pie Chart: When hovered on a Pie Chart, the user's name and their contribution is shown as a percentage to all users.</strong><br>
+        <strong>Button Selection: Buttons are given for selecting the interactions for user or average interactions for all users in Bar Graph.</strong><br>
+        <strong>Hover on Bar Graph: When hovered on any of the bar's on the bar graph, corresponding number of interactions resposible for that bar is shown in tooltip.</strong><br>
+        <strong>Hover on Timeseries Chart: When hovered on the timeseries chart, user name and the number of interactions of that parcicular user is shown in tooltip.</strong><br>
+        <strong>Zoom on Timeseries Chart: Zoom option is given on the timeseries chart so that we can see data for specific dates if the data is too conjusted .</strong><br>
+        <strong>Scroll on Timeseries Chart: We can scroll those any dates and also choose chart between 2 dates to better see the chart.</strong><br>
 
-    <h1 style="padding-left: 10px">Behavior Logging and Insights</h1>
-    <ul>
-        <li>UpVote and DownVote: These options are tracked and logged so that we get to know more about the user. Information such as his likes, dislikes about content of the answer, or if the user is not upvoting or downvoting the answers or questions it also means that user has read the it fully</li>
-        <li>SubmitButton: This activity log tells us if user has more knowledge on the topics and is willing to share his/her thoughts and knowledge</li>
-        <li>Questions: Questions that user is checking is logged. This will give us insights of user's topics of interests</li>
-        <li>Favorites: User's activity of saving the question to his/her favorite lists will also gives insights of his/her interests</li>
-        <li>Scroll: User's scroll in the webpage is tracked and logged. With this information we may know whether user is reading all the answers/questions and spending enought time reading the content in the screen. This will also contribute to his/her's interested topics</li>
-        <li>Tags and Related Topics: Selections of tags in the webpages and clicking related topics links on the sides,  are tracked and logged. This will give us direct information of user's interested topics. This will enable us to recommend questions of his/her interest infuture</li>
-        <li>Asking Questions and Answer in comments: By logging these two actions in the webpage, will give us insights of user's interest as well his/her's strong knowledge in particular topics</li>
-        <li>Time: For all the above Interactions, time of the interaction is logged too. This will help in recommendations in future. Example, if user is at work during day time and is interested in only looking for answer's and during night time he/she has enough free time and answer's questions to topics user is strong at will help us recommending them at appropriate time</li>
-    </ul>
-
+        </p>
+    </div>
 </div>
 
 </body>
@@ -88,5 +143,98 @@
             }
         });
     }
+    function getuserWeight() {
+        $.ajax({
+            url: "/vizData/userWeight",
+            type:"POST",
+            success: function(weightData){
+                var chart = c3.generate({
+                    bindto: '#userWeightChart',
+                    data: {
+                        columns: weightData,
+                        type : 'pie'
+                    }
+                });
+            }
+        });
+    }
+    function getInteractionsAverageUser(url) {
+        if(url == '/vizData/interactionsAverageUser'){
+            document.getElementById('averageUserChartButton').disabled = true;
+            document.getElementById('currentUserChartButton').disabled = false;
+        }else{
+            document.getElementById('averageUserChartButton').disabled = false;
+            document.getElementById('currentUserChartButton').disabled = true;
+        }
+        console.log(url);
+        $.ajax({
+            url: url,
+            type:"POST",
+            success: function(data){
+                var chart = c3.generate({
+                    bindto: '#interactionsPerUserChart',
+                    data: {
+                        x: 'x',
+                        columns: data,
+                        type: 'bar'
+                    },
+                    axis: {
+                        x: {
+                            type: 'category',
+                            tick: {
+                                rotate: 75,
+                                multiline: true
+                            }
+                        },
+                        y: {
+                            label: 'Average Interactions'
+                        }
+                    },
+                    zoom: {
+                        enabled: true
+                    }
+                });
+            }
+        });
+    }
+
+    function getLastMonthInteractionsOfUser() {
+        $.ajax({
+            url: '/vizData/interactionsLastMonth',
+            type:"POST",
+            success: function(data){
+                var chart = c3.generate({
+                    bindto: '#interactions30UserChart',
+                    data: {
+                        x: 'x',
+                        columns: data
+                    },
+                    axis: {
+                        x: {
+                            type: 'category',
+                            tick: {
+                                rotate: 75,
+                                multiline: false
+                            },
+                            height: 60
+                        },
+                        y: {
+                            label: 'Number of Interactions'
+                        }
+                    },
+                    zoom: {
+                        enabled: true
+                    },
+                    subchart: {
+                        show: true
+                    }
+                });
+            }
+        });
+    }
+    getInteractionsFromDB();
+    getLastMonthInteractionsOfUser();
+    getuserWeight();
+    getInteractionsAverageUser("/vizData/interactionCurrentUser");
 </script>
 </html>
